@@ -41,7 +41,6 @@ func Parse(path string,
 	if err = json.Unmarshal(jsonFile, &deviceProfile); err != nil {
 		return err
 	}
-
 	for i := 0; i <= len(deviceProfile.DeviceInstances)-1; i++ {
 		for j := 0; j <= len(deviceProfile.Protocols)-1; j++ {
 			var protocolFound bool

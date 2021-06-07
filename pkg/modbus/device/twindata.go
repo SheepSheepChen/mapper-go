@@ -60,7 +60,7 @@ func (td *TwinData) Run() error {
 	}
 	s1 := strings.Replace(fmt.Sprintf("%v", td.Results), "[", "", -1)
 	s2 := strings.Replace(s1, "]", "", -1)
-	splitS2 := strings.Split(s2, "")
+	splitS2 := strings.Split(s2, " ")
 	var nodeName string
 	if len(strings.Split(td.DeviceInstanceName, "-")) == 3 && strings.Split(td.DeviceInstanceName, "-")[2] != "" {
 		nodeName = strings.Split(td.DeviceInstanceName, "-")[2]

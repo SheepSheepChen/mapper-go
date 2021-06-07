@@ -1,90 +1,546 @@
 {
-	"deviceInstances": [{
-		"id": "sensor-tag-instance-01",
-		"name": "sensor-tag-instance-01",
-		"protocol": "modbus-sensor-tag-instance-01",
-		"model": "sensor-tag-model",
-		"twins": [{
-			"propertyName": "temperature-enable",
-			"desired": {
-				"value": "OFF",
-				"metadata": {
-					"timestamp": "1550049403598",
-					"type": "string"
+	"deviceInstances": [
+		{
+			"id": "device-shutter01-ke-node-arm64",
+			"name": "device-shutter01-ke-node-arm64",
+			"protocol": "modbus-device-shutter01-ke-node-arm64",
+			"model": "modbus-rtu-shutter-model",
+			"dataProperties": [
+				{
+					"propertyName": "lux",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "co2",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "pressure",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "temperature",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "humidity",
+					"metadata": {
+						"type": "string"
+					}
 				}
-			},
-			"reported": {
-				"value": "OFF",
-				"metadata": {
-					"timestamp": "1550049403598",
-					"type": "string"
+			],
+			"dataTopic": "$ke/events/+/device/customized/update",
+			"propertyVisitors": [
+				{
+					"name": "lux",
+					"propertyName": "lux",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 2,
+						"offset": 2,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "co2",
+					"propertyName": "co2",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 1,
+						"offset": 7,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "pressure",
+					"propertyName": "pressure",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 1,
+						"offset": 11,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "temperature",
+					"propertyName": "temperature",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 2,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "humidity",
+					"propertyName": "humidity",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 2,
+						"register": "HoldingRegister"
+					}
 				}
-			}
-		}],
-		"propertyVisitors": [{
-			"name": "temperature",
-			"propertyName": "temperature",
-			"modelName": "sensor-tag-model",
-			"protocol": "modbus",
-			"visitorConfig": {
-				"register": "CoilRegister",
-				"offset": 2,
-				"limit": 1,
-				"scale": 1,
-				"isSwap": true,
-				"isRegisterSwap": true
-			}
-		}, {
-			"name": "temperature-enable",
-			"propertyName": "temperature-enable",
-			"modelName": "sensor-tag-model",
-			"protocol": "modbus",
-			"visitorConfig": {
-				"register": "DiscreteInputRegister",
-				"offset": 3,
-				"limit": 1,
-				"scale": 1,
-				"isSwap": true,
-				"isRegisterSwap": true
-			}
-		}]
-	}],
-	"deviceModels": [{
-		"name": "sensor-tag-model",
-		"properties": [{
-			"name": "temperature",
-			"dataType": "int",
-			"description": "temperature in degree celsius",
-			"accessMode": "ReadWrite",
-			"defaultValue": 0,
-			"minimum": 0,
-			"maximum": 100,
-			"unit": "degree celsius"
-		}, {
-			"name": "temperature-enable",
-			"dataType": "string",
-			"description": "enable data collection of temperature sensor",
-			"accessMode": "ReadWrite",
-			"defaultValue": "OFF"
-		}]
-	}],
-	"protocols": [{
-		"name": "modbus-sensor-tag-instance-01",
-		"protocol": "modbus",
-		"protocolConfig": {
-			"slaveID": 1
+			]
 		},
-		"protocolCommonConfig": {
-			"com": {
-				"serialPort": "1",
-				"baudRate": 115200,
-				"dataBits": 8,
-				"parity": "even",
-				"stopBits": 1
+		{
+			"id": "device-shutter02-ke-node-arm64",
+			"name": "device-shutter02-ke-node-arm64",
+			"protocol": "modbus-device-shutter02-ke-node-arm64",
+			"model": "modbus-rtu-shutter-model",
+			"dataProperties": [
+				{
+					"propertyName": "pm2.5",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "pm10",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "noise",
+					"metadata": {
+						"type": "string"
+					}
+				}
+			],
+			"dataTopic": "$ke/events/+/device/customized/update",
+			"propertyVisitors": [
+				{
+					"name": "pm2.5",
+					"propertyName": "pm2.5",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 2,
+						"offset": 20,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "pm10",
+					"propertyName": "pm10",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 2,
+						"offset": 20,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "noise",
+					"propertyName": "noise",
+					"modelName": "modbus-rtu-shutter-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 1,
+						"offset": 4,
+						"register": "HoldingRegister"
+					}
+				}
+			]
+		},
+		{
+			"id": "device-imu-ke-node-arm64",
+			"name": "device-imu-ke-node-arm64",
+			"protocol": "modbus-device-imu-ke-node-arm64",
+			"model": "modbus-rtu-imu-model",
+			"dataProperties": [
+				{
+					"propertyName": "acceleration",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "angularVelocity",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "angular",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "magnetic",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "element",
+					"metadata": {
+						"type": "string"
+					}
+				},
+				{
+					"propertyName": "currenttime",
+					"metadata": {
+						"type": "string"
+					}
+				}
+			],
+			"dataTopic": "$ke/events/+/device/customized/update",
+			"propertyVisitors": [
+				{
+					"name": "acceleration",
+					"propertyName": "acceleration",
+					"modelName": "modbus-rtu-imu-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 3,
+						"offset": 52,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "angularVelocity",
+					"propertyName": "angularVelocity",
+					"modelName": "modbus-rtu-imu-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 3,
+						"offset": 55,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "angular",
+					"propertyName": "angular",
+					"modelName": "modbus-rtu-imu-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 3,
+						"offset": 61,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "magnetic",
+					"propertyName": "magnetic",
+					"modelName": "modbus-rtu-imu-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 3,
+						"offset": 58,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "element",
+					"propertyName": "element",
+					"modelName": "modbus-rtu-imu-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 4,
+						"offset": 81,
+						"register": "HoldingRegister"
+					}
+				},
+				{
+					"name": "currenttime",
+					"propertyName": "currenttime",
+					"modelName": "modbus-rtu-imu-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"limit": 4,
+						"offset": 48,
+						"register": "HoldingRegister"
+					}
+				}
+			]
+		},
+		{
+			"id": "device-snow-ke-node-arm64",
+			"name": "device-snow-ke-node-arm64",
+			"protocol": "modbus-device-snow-ke-node-arm64",
+			"model": "modbus-rtu-snow-model",
+			"dataProperties": [
+				{
+					"propertyName": "snow",
+					"metadata": {
+						"type": "string"
+					}
+				}
+			],
+			"dataTopic": "$ke/events/+/device/customized/update",
+			"propertyVisitors": [
+				{
+					"name": "snow",
+					"propertyName": "snow",
+					"modelName": "modbus-rtu-snow-model",
+					"protocol": "modbus",
+					"visitorConfig": {
+						"register": "HoldingRegister",
+						"offset": 22,
+						"limit": 1
+					}
+				}
+			]
+		}
+	],
+	"deviceModels": [
+		{
+			"name": "modbus-rtu-shutter-model",
+			"properties": [
+				{
+					"name": "lux",
+					"dataType": "int",
+					"description": "光强",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "lux"
+				},
+				{
+					"name": "co2",
+					"dataType": "int",
+					"description": "二氧化碳",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "ppm"
+				},
+				{
+					"name": "pressure",
+					"dataType": "float",
+					"description": "气压",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "hpa"
+				},
+				{
+					"name": "pm2.5",
+					"dataType": "int",
+					"description": "pm2.5",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "ug"
+				},
+				{
+					"name": "pm10",
+					"dataType": "int",
+					"description": "pm10",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "ug"
+				},
+				{
+					"name": "noise",
+					"dataType": "int",
+					"description": "噪音",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "db"
+				},
+				{
+					"name": "temperature",
+					"dataType": "int",
+					"description": "温度",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "℃"
+				},
+				{
+					"name": "humidity",
+					"dataType": "int",
+					"description": "湿度",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 10000000,
+					"unit": "%rh"
+				}
+			]
+		},
+		{
+			"name": "modbus-rtu-imu-model",
+			"properties": [
+				{
+					"name": "acceleration",
+					"dataType": "float",
+					"description": "加速度",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 0,
+					"unit": "m/s2"
+				},
+				{
+					"name": "angularVelocity",
+					"dataType": "float",
+					"description": "角速度X轴",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 0,
+					"unit": "°/s"
+				},
+				{
+					"name": "angular",
+					"dataType": "int",
+					"description": "角度",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 0,
+					"unit": "°"
+				},
+				{
+					"name": "magnetic",
+					"dataType": "int",
+					"description": "磁场",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 0
+				},
+				{
+					"name": "element",
+					"dataType": "int",
+					"description": "四元素",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 0
+				},
+				{
+					"name": "currenttime",
+					"dataType": "int",
+					"description": "时间",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 0
+				}
+			]
+		},
+		{
+			"name": "modbus-rtu-snow-model",
+			"properties": [
+				{
+					"name": "snow",
+					"dataType": "int",
+					"description": "snow",
+					"accessMode": "ReadOnly",
+					"defaultValue": 0,
+					"minimum": 0,
+					"maximum": 1
+				}
+			]
+		}
+	],
+	"protocols": [
+		{
+			"name": "modbus-device-shutter01-ke-node-arm64",
+			"protocol": "modbus",
+			"protocolConfig": {
+				"slaveID": 1
 			},
-			"customizedValues": {
-				"serialType": "RS485"
+			"protocolCommonConfig": {
+				"com": {
+					"baudRate": 9600,
+					"dataBits": 8,
+					"parity": "none",
+					"serialPort": "/dev/ttyUSB1",
+					"stopBits": 1
+				},
+				"commType": "com",
+				"customizedValues": {
+					"serialPort": "RS485"
+				}
+			}
+		},
+		{
+			"name": "modbus-device-shutter02-ke-node-arm64",
+			"protocol": "modbus",
+			"protocolConfig": {
+				"slaveID": 1
+			},
+			"protocolCommonConfig": {
+				"com": {
+					"baudRate": 9600,
+					"dataBits": 8,
+					"parity": "none",
+					"serialPort": "/dev/ttyUSB2",
+					"stopBits": 1
+				},
+				"commType": "com",
+				"customizedValues": {
+					"serialPort": "RS485"
+				}
+			}
+		},
+		{
+			"name": "modbus-device-imu-ke-node-arm64",
+			"protocol": "modbus",
+			"protocolConfig": {
+				"slaveID": 80
+			},
+			"protocolCommonConfig": {
+				"com": {
+					"baudRate": 9600,
+					"dataBits": 8,
+					"parity": "none",
+					"serialPort": "/dev/ttyUSB0",
+					"stopBits": 1
+				},
+				"commType": "com",
+				"customizedValues": {
+					"serialPort": "RS485"
+				}
+			}
+		},
+		{
+			"name": "modbus-device-snow-ke-node-arm64",
+			"protocol": "modbus",
+			"protocolConfig": {
+				"slaveID": 1
+			},
+			"protocolCommonConfig": {
+				"com": {
+					"serialPort": "/dev/ttyUSB3",
+					"baudRate": 9600,
+					"dataBits": 8,
+					"parity": "none",
+					"stopBits": 1
+				},
+				"commType": "com",
+				"customizedValues": {
+					"serialPort": "RS485"
+				}
 			}
 		}
-	}]
+	]
 }

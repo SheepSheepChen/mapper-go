@@ -2,6 +2,7 @@ package configmap
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/kubeedge/mappers-go/pkg/common"
@@ -20,6 +21,7 @@ func TestParse(t *testing.T) {
 
 	assert.Nil(t, Parse("./configmap_test.json", devices, models, protocols))
 	for _, device := range devices {
+		fmt.Println(device)
 		var pcc ModbusProtocolCommonConfig
 		assert.Nil(t, json.Unmarshal([]byte(device.Instance.PProtocol.ProtocolCommonConfig), &pcc))
 		assert.Equal(t, "RS485", pcc.CustomizedValues["serialType"])
