@@ -18,6 +18,7 @@ package device
 
 import (
 	"fmt"
+	"github.com/kubeedge/mappers-go/pkg/events"
 	"strconv"
 	"strings"
 
@@ -47,6 +48,10 @@ func (td *TwinData) Run() error {
 		err error
 	)
 	td.Results, err = td.Client.Get(td.RegisterType, td.Address, td.Quantity)
+	var nodeName string
+	if len(strings.Split(td.DeviceInstanceName, "-")) == 3 && strings.Split(td.DeviceInstanceName, "-")[2] != "" {
+		nodeName = strings.Split(td.DeviceInstanceName, "-")[2]
+	}
 	// 访问失败之后，继续访问，访问10次，如果10次全部失败说明设备或者串口不可用，直接retuen
 	if err != nil {
 		for i := 0; i <= 9; i++ {
@@ -54,6 +59,7 @@ func (td *TwinData) Run() error {
 				break
 			}
 			if i == 9 {
+				events.EventNotice(nodeName)
 				return fmt.Errorf("IMU设备不可用")
 			}
 		}
@@ -61,10 +67,6 @@ func (td *TwinData) Run() error {
 	s1 := strings.Replace(fmt.Sprintf("%v", td.Results), "[", "", -1)
 	s2 := strings.Replace(s1, "]", "", -1)
 	splitS2 := strings.Split(s2, " ")
-	var nodeName string
-	if len(strings.Split(td.DeviceInstanceName, "-")) == 3 && strings.Split(td.DeviceInstanceName, "-")[2] != "" {
-		nodeName = strings.Split(td.DeviceInstanceName, "-")[2]
-	}
 	// acceleration
 	ss1 := splitS2[0]
 	ss2 := splitS2[1]
