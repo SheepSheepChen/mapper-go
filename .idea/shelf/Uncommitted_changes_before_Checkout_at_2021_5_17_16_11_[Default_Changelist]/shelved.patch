@@ -1,0 +1,92 @@
+Index: pkg/modbus/device/twindata.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\nCopyright 2020 The KubeEdge Authors.\r\n\r\nLicensed under the Apache License, Version 2.0 (the \"License\");\r\nyou may not use this file except in compliance with the License.\r\nYou may obtain a copy of the License at\r\n\r\n   http://www.apache.org/licenses/LICENSE-2.0\r\n\r\nUnless required by applicable law or agreed to in writing, software\r\ndistributed under the License is distributed on an \"AS IS\" BASIS,\r\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\nSee the License for the specific language governing permissions and\r\nlimitations under the License.\r\n*/\r\n\r\npackage device\r\n\r\nimport (\r\n\t\"fmt\"\r\n\t\"strconv\"\r\n\t\"strings\"\r\n\r\n\t\"github.com/kubeedge/mappers-go/pkg/common\"\r\n\t\"github.com/kubeedge/mappers-go/pkg/modbus/driver\"\r\n\t\"github.com/kubeedge/mappers-go/pkg/modbus/globals\"\r\n\t\"k8s.io/klog\"\r\n)\r\n\r\n// TwinData is the timer structure for getting twin/data.\r\ntype TwinData struct {\r\n\tClient             *driver.ModbusClient\r\n\tName               string\r\n\tType               string\r\n\tRegisterType       string\r\n\tAddress            uint16\r\n\tQuantity           uint16\r\n\tResults            []byte\r\n\tTopic              string\r\n\tDeviceModel        string\r\n\tDeviceInstanceName string\r\n}\r\n\r\n// Run timer function.\r\nfunc (td *TwinData) Run() error {\r\n\tvar (\r\n\t\terr error\r\n\t)\r\n\ttd.Results, err = td.Client.Get(td.RegisterType, td.Address, td.Quantity)\r\n\t// 访问失败之后，继续访问，访问10次，如果10次全部失败说明设备或者串口不可用，直接retuen\r\n\tif err != nil {\r\n\t\tfor i := 0; i <= 9; i++ {\r\n\t\t\tif td.Results, err = td.Client.Get(td.RegisterType, td.Address, td.Quantity); err == nil {\r\n\t\t\t\tbreak\r\n\t\t\t}\r\n\t\t\tif i == 9 {\r\n\t\t\t\treturn fmt.Errorf(\"IMU设备不可用\")\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\ts1 := strings.Replace(fmt.Sprintf(\"%v\", td.Results), \"[\", \"\", -1)\r\n\ts2 := strings.Replace(s1, \"]\", \"\", -1)\r\n\tsplitS2 := strings.Split(s2, \"\")\r\n\tvar nodeName string\r\n\tif len(strings.Split(td.DeviceInstanceName, \"-\")) == 3 && strings.Split(td.DeviceInstanceName, \"-\")[2] != \"\" {\r\n\t\tnodeName = strings.Split(td.DeviceInstanceName, \"-\")[2]\r\n\t}\r\n\t// acceleration\r\n\tss1 := splitS2[0]\r\n\tss2 := splitS2[1]\r\n\tss3 := splitS2[2]\r\n\tss4 := splitS2[3]\r\n\tss5 := splitS2[4]\r\n\tss6 := splitS2[5]\r\n\taxh, _ := strconv.Atoi(ss1)\r\n\taxl, _ := strconv.Atoi(ss2)\r\n\tayh, _ := strconv.Atoi(ss3)\r\n\tayl, _ := strconv.Atoi(ss4)\r\n\tazh, _ := strconv.Atoi(ss5)\r\n\tazl, _ := strconv.Atoi(ss6)\r\n\tk := 16.0\r\n\taccX := float64(axh<<8|axl) / 32768.0 * k\r\n\taccY := float64(ayh<<8|ayl) / 32768.0 * k\r\n\taccZ := float64(azh<<8|azl) / 32768.0 * k\r\n\tif accX >= k {\r\n\t\taccX -= 2 * k\r\n\t}\r\n\tif accY >= k {\r\n\t\taccY -= 2 * k\r\n\t}\r\n\tif accZ >= k {\r\n\t\taccZ -= 2 * k\r\n\t}\r\n\tklog.V(2).Info(\"---------accX-----------\", accX)\r\n\tklog.V(2).Info(\"---------accY-----------\", accY)\r\n\tklog.V(2).Info(\"---------accZ-----------\", accZ)\r\n\t// angularVelocity\r\n\r\n\tss7 := splitS2[6]\r\n\tss8 := splitS2[7]\r\n\tss9 := splitS2[8]\r\n\tss10 := splitS2[9]\r\n\tss11 := splitS2[10]\r\n\tss12 := splitS2[11]\r\n\twxh, _ := strconv.Atoi(ss7)\r\n\twxl, _ := strconv.Atoi(ss8)\r\n\twyh, _ := strconv.Atoi(ss9)\r\n\twyl, _ := strconv.Atoi(ss10)\r\n\twzh, _ := strconv.Atoi(ss11)\r\n\twzl, _ := strconv.Atoi(ss12)\r\n\tk = 2000.0\r\n\twX := float64(wxh<<8|wxl) / 32768.0 * k\r\n\twY := float64(wyh<<8|wyl) / 32768.0 * k\r\n\twZ := float64(wzh<<8|wzl) / 32768.0 * k\r\n\tif wX >= k {\r\n\t\twX -= 2 * k\r\n\t}\r\n\tif wY >= k {\r\n\t\twY -= 2 * k\r\n\t}\r\n\tif wZ >= k {\r\n\t\twZ -= 2 * k\r\n\t}\r\n\tklog.V(2).Info(\"---------wX-----------\", wX)\r\n\tklog.V(2).Info(\"---------wY-----------\", wY)\r\n\tklog.V(2).Info(\"---------wZ-----------\", wZ)\r\n\t// magnetic\r\n\tss13 := splitS2[12]\r\n\tss14 := splitS2[13]\r\n\tss15 := splitS2[14]\r\n\tss16 := splitS2[15]\r\n\tss17 := splitS2[16]\r\n\tss18 := splitS2[17]\r\n\thxH, _ := strconv.Atoi(ss13)\r\n\thxL, _ := strconv.Atoi(ss14)\r\n\thyH, _ := strconv.Atoi(ss15)\r\n\thyL, _ := strconv.Atoi(ss16)\r\n\thzH, _ := strconv.Atoi(ss17)\r\n\thzL, _ := strconv.Atoi(ss18)\r\n\tk = 1.0\r\n\thX := float64(hxH<<8 | hxL)\r\n\thY := float64(hyH<<8 | hyL)\r\n\thZ := float64(hzH<<8 | hzL)\r\n\tif hX >= k {\r\n\t\thX -= 2 * k\r\n\t}\r\n\tif hY >= k {\r\n\t\thY -= 2 * k\r\n\t}\r\n\tif hZ >= k {\r\n\t\thZ -= 2 * k\r\n\t}\r\n\tklog.V(2).Info(\"---------hX-----------\", hX)\r\n\tklog.V(2).Info(\"---------hY-----------\", hY)\r\n\tklog.V(2).Info(\"---------hZ-----------\", hZ)\r\n\t// angular\r\n\tss19 := splitS2[18]\r\n\tss20 := splitS2[19]\r\n\tss21 := splitS2[20]\r\n\tss22 := splitS2[21]\r\n\tss23 := splitS2[22]\r\n\tss24 := splitS2[23]\r\n\trollH, _ := strconv.Atoi(ss19)\r\n\trollL, _ := strconv.Atoi(ss20)\r\n\tpitchH, _ := strconv.Atoi(ss21)\r\n\tpitchL, _ := strconv.Atoi(ss22)\r\n\tyawH, _ := strconv.Atoi(ss23)\r\n\tYawL, _ := strconv.Atoi(ss24)\r\n\tk = 180.0\r\n\troll := float64(rollH<<8|rollL) / 32768.0 * k\r\n\tpitch := float64(pitchH<<8|pitchL) / 32768.0 * k\r\n\tyaw := float64(yawH<<8|YawL) / 32768.0 * k\r\n\tif roll >= k {\r\n\t\troll -= 2 * k\r\n\t}\r\n\tif pitch >= k {\r\n\t\tpitch -= 2 * k\r\n\t}\r\n\tif yaw >= k {\r\n\t\tyaw -= 2 * k\r\n\t}\r\n\tklog.V(2).Info(\"---------roll-----------\", roll)\r\n\tklog.V(2).Info(\"---------pitch-----------\", pitch)\r\n\tklog.V(2).Info(\"---------yaw-----------\", yaw)\r\n\r\n\t//element\r\n\tss25 := splitS2[len(splitS2)-8]\r\n\tss26 := splitS2[len(splitS2)-7]\r\n\tss27 := splitS2[len(splitS2)-6]\r\n\tss28 := splitS2[len(splitS2)-5]\r\n\tss29 := splitS2[len(splitS2)-4]\r\n\tss30 := splitS2[len(splitS2)-3]\r\n\tss31 := splitS2[len(splitS2)-2]\r\n\tss32 := splitS2[len(splitS2)-1]\r\n\tq0H, _ := strconv.Atoi(ss25)\r\n\tq0L, _ := strconv.Atoi(ss26)\r\n\tq1H, _ := strconv.Atoi(ss27)\r\n\tq1L, _ := strconv.Atoi(ss28)\r\n\tq2H, _ := strconv.Atoi(ss29)\r\n\tq2L, _ := strconv.Atoi(ss30)\r\n\tq3H, _ := strconv.Atoi(ss31)\r\n\tq3L, _ := strconv.Atoi(ss32)\r\n\tk = 1.0\r\n\tq0 := float64(q0H<<8|q0L) / 32768.0\r\n\tq1 := float64(q1H<<8|q1L) / 32768.0\r\n\tq2 := float64(q2H<<8|q2L) / 32768.0\r\n\tq3 := float64(q3H<<8|q3L) / 32768.0\r\n\tif q0 >= k {\r\n\t\tq0 -= 2 * k\r\n\t}\r\n\tif q1 >= k {\r\n\t\tq1 -= 2 * k\r\n\t}\r\n\tif q2 >= k {\r\n\t\tq2 -= 2 * k\r\n\t}\r\n\tif q3 >= k {\r\n\t\tq3 -= 2 * k\r\n\t}\r\n\tklog.V(2).Info(\"---------q0-----------\", q0)\r\n\tklog.V(2).Info(\"---------q1-----------\", q1)\r\n\tklog.V(2).Info(\"---------q2-----------\", q2)\r\n\tklog.V(2).Info(\"---------q3-----------\", q3)\r\n\tglobals.FBClient.Publish(td.DeviceInstanceName, fmt.Sprintf(`{\"node\":\"%s\",\"__name__\":\"%s\",\"accX\":%f,\"accY\":%f,\"accZ\":%f,\"wX\":%f,\"wY\":%f,\"wZ\":%f,\"Hx\":%f,\"Hy\":%f,\"Hz\":%f,\"Roll\":%f,\"Pitch\":%f,\"Yaw\":%f,\"Q0\":%f,\"Q1\":%f,\"Q2\":%f,\"Q3\":%f,\"state\":\"%s\",\"device\":\"imu\",\"topicKey\":\"%s\"}`, nodeName, td.DeviceInstanceName, accX, accY, accZ, wX, wY, wZ, hX, hY, hZ, roll, pitch, yaw, q0, q1, q2, q3, td.Client.GetStatus(), globals.TopicKey))\r\n\t// construct payload\r\n\tvar payload []byte\r\n\tif strings.Contains(td.Topic, \"$hw\") {\r\n\t\tif payload, err = common.CreateMessageTwinUpdate(td.Name, td.Type, strconv.Itoa(int(td.Results[0]))); err != nil {\r\n\t\t\tklog.Error(\"Create message twin update failed\")\r\n\t\t\treturn err\r\n\t\t}\r\n\t} else {\r\n\t\tif payload, err = common.CreateMessageData(td.Name, td.Type, strconv.Itoa(int(td.Results[0]))); err != nil {\r\n\t\t\tklog.Error(\"Create message data failed\")\r\n\t\t\treturn err\r\n\t\t}\r\n\t}\r\n\tif err = globals.MqttClient.Publish(td.Topic, payload); err != nil {\r\n\t\tklog.Error(err)\r\n\t}\r\n\r\n\tklog.V(2).Infof(\"Update value: %s, topic: %s\", strconv.Itoa(int(td.Results[0])), td.Topic)\r\n\treturn err\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pkg/modbus/device/twindata.go	(revision 3ce8b648349f2f4f0c4d74cabf91d014cc88bcbd)
++++ pkg/modbus/device/twindata.go	(date 1621230191596)
+@@ -20,6 +20,7 @@
+ 	"fmt"
+ 	"strconv"
+ 	"strings"
++	"time"
+ 
+ 	"github.com/kubeedge/mappers-go/pkg/common"
+ 	"github.com/kubeedge/mappers-go/pkg/modbus/driver"
+@@ -45,6 +46,7 @@
+ func (td *TwinData) Run() error {
+ 	var (
+ 		err error
++		currenttime time.Time
+ 	)
+ 	td.Results, err = td.Client.Get(td.RegisterType, td.Address, td.Quantity)
+ 	// 访问失败之后，继续访问，访问10次，如果10次全部失败说明设备或者串口不可用，直接retuen
+@@ -58,6 +60,7 @@
+ 			}
+ 		}
+ 	}
++	currenttime = time.Now()
+ 	s1 := strings.Replace(fmt.Sprintf("%v", td.Results), "[", "", -1)
+ 	s2 := strings.Replace(s1, "]", "", -1)
+ 	splitS2 := strings.Split(s2, "")
+@@ -184,14 +187,14 @@
+ 	klog.V(2).Info("---------yaw-----------", yaw)
+ 
+ 	//element
+-	ss25 := splitS2[len(splitS2)-8]
+-	ss26 := splitS2[len(splitS2)-7]
+-	ss27 := splitS2[len(splitS2)-6]
+-	ss28 := splitS2[len(splitS2)-5]
+-	ss29 := splitS2[len(splitS2)-4]
+-	ss30 := splitS2[len(splitS2)-3]
+-	ss31 := splitS2[len(splitS2)-2]
+-	ss32 := splitS2[len(splitS2)-1]
++	ss25 := splitS2[24]
++	ss26 := splitS2[25]
++	ss27 := splitS2[26]
++	ss28 := splitS2[27]
++	ss29 := splitS2[28]
++	ss30 := splitS2[29]
++	ss31 := splitS2[30]
++	ss32 := splitS2[31]
+ 	q0H, _ := strconv.Atoi(ss25)
+ 	q0L, _ := strconv.Atoi(ss26)
+ 	q1H, _ := strconv.Atoi(ss27)
+@@ -221,6 +224,35 @@
+ 	klog.V(2).Info("---------q1-----------", q1)
+ 	klog.V(2).Info("---------q2-----------", q2)
+ 	klog.V(2).Info("---------q3-----------", q3)
++
++	//currenttime
++	ss33 := splitS2[32]
++	ss34 := splitS2[33]
++	ss35 := splitS2[34]
++	ss36 := splitS2[35]
++	ss37 := splitS2[36]
++	ss38 := splitS2[37]
++	ss39 := splitS2[38]
++	ss40 := splitS2[39]
++	year, _ := strconv.Atoi(ss33)
++	month, _ := strconv.Atoi(ss34)
++	day, _ := strconv.Atoi(ss35)
++	hour, _ := strconv.Atoi(ss36)
++	minute, _ := strconv.Atoi(ss37)
++	second, _ := strconv.Atoi(ss38)
++	millisecond1, _ := strconv.Atoi(ss39)
++	millisecond2, _ := strconv.Atoi(ss40)
++	klog.V(2).Info("---------year-----------", year)
++	klog.V(2).Info("---------month-----------", month)
++	klog.V(2).Info("---------day-----------", day)
++	klog.V(2).Info("---------hour-----------", hour)
++	klog.V(2).Info("---------minute-----------", minute)
++	klog.V(2).Info("---------second-----------", second)
++	klog.V(2).Info("---------millisecond1-----------", millisecond1)
++	klog.V(2).Info("---------millisecond2-----------", millisecond2)
++	klog.V(2).Info("---------currenttime-----------", currenttime)
++
++
+ 	globals.FBClient.Publish(td.DeviceInstanceName, fmt.Sprintf(`{"node":"%s","__name__":"%s","accX":%f,"accY":%f,"accZ":%f,"wX":%f,"wY":%f,"wZ":%f,"Hx":%f,"Hy":%f,"Hz":%f,"Roll":%f,"Pitch":%f,"Yaw":%f,"Q0":%f,"Q1":%f,"Q2":%f,"Q3":%f,"state":"%s","device":"imu","topicKey":"%s"}`, nodeName, td.DeviceInstanceName, accX, accY, accZ, wX, wY, wZ, hX, hY, hZ, roll, pitch, yaw, q0, q1, q2, q3, td.Client.GetStatus(), globals.TopicKey))
+ 	// construct payload
+ 	var payload []byte

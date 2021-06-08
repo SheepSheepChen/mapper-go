@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:czy-mapper" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:imu" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="eacb0c58-133b-4242-9f9a-89c016102ba7" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="$PROJECT_DIR$/../../../../csware/GO" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="shutter_all" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1s8xr8y711iVh1zp5WFQl0nG3i3" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunManager" selected="Go Build.go build example.go">
+    <configuration name="go build example.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="mappers-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <envs>
+        <env name="GO111MODULE" value="off" />
+      </envs>
+      <kind value="FILE" />
+      <filePath value="$APPLICATION_CONFIG_DIR$/scratches/example.go" />
+      <package value="github.com/kubeedge/mappers-go" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap (1)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="mappers-go" />
+      <working_directory value="$PROJECT_DIR$/pkg/modbus/configmap" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/kubeedge/mappers-go/pkg/modbus/configmap" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestParse\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap (2)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="mappers-go" />
+      <working_directory value="$PROJECT_DIR$/pkg/modbus/configmap" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/kubeedge/mappers-go/pkg/modbus/configmap" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestParse\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="mappers-go" />
+      <working_directory value="$PROJECT_DIR$/pkg/modbus/configmap" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/kubeedge/mappers-go/pkg/modbus/configmap" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestParse\E$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap (2)" />
+        <item itemvalue="Go Test.TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap (1)" />
+        <item itemvalue="Go Test.TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap" />
+        <item itemvalue="Go Build.go build example.go" />
+        <item itemvalue="Go Test.TestParse in github.com/kubeedge/mappers-go/pkg/modbus/configmap (2)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="imu" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="440" y="87" key="#Deployment" timestamp="1623046239290">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="440" y="87" key="#Deployment/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1623046239290" />
+    <state x="351" y="58" key="#SSH_Configurations" timestamp="1620629047647">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="351" y="58" key="#SSH_Configurations/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620629047647" />
+    <state x="-1289" y="269" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1623035538500">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1289" y="269" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1623035538500" />
+    <state x="505" y="213" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620632213808" />
+    <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1623045780455">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="-1296" y="201" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621317410210" />
+    <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1623045780455" />
+    <state x="553" y="167" key="FileChooserDialogImpl" timestamp="1623136603039">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="-1229" y="211" key="FileChooserDialogImpl/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1622622424024" />
+    <state x="553" y="167" key="FileChooserDialogImpl/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1623136603039" />
+    <state width="1877" height="227" key="GridCell.Tab.0.bottom" timestamp="1621317253457">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="227" key="GridCell.Tab.0.bottom/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621317253457" />
+    <state width="937" height="348" key="GridCell.Tab.0.bottom/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="1877" height="227" key="GridCell.Tab.0.center" timestamp="1621317253456">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="227" key="GridCell.Tab.0.center/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621317253456" />
+    <state width="937" height="348" key="GridCell.Tab.0.center/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="1877" height="227" key="GridCell.Tab.0.left" timestamp="1621317253456">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="227" key="GridCell.Tab.0.left/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621317253456" />
+    <state width="937" height="348" key="GridCell.Tab.0.left/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="1877" height="227" key="GridCell.Tab.0.right" timestamp="1621317253456">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="227" key="GridCell.Tab.0.right/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621317253456" />
+    <state width="937" height="348" key="GridCell.Tab.0.right/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="937" height="348" key="GridCell.Tab.1.bottom" timestamp="1620986625912">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="937" height="348" key="GridCell.Tab.1.bottom/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1620971782500" />
+    <state width="937" height="348" key="GridCell.Tab.1.bottom/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="937" height="348" key="GridCell.Tab.1.center" timestamp="1620986625912">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="937" height="348" key="GridCell.Tab.1.center/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1620971782500" />
+    <state width="937" height="348" key="GridCell.Tab.1.center/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="937" height="348" key="GridCell.Tab.1.left" timestamp="1620986625912">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="937" height="348" key="GridCell.Tab.1.left/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1620971782500" />
+    <state width="937" height="348" key="GridCell.Tab.1.left/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state width="937" height="348" key="GridCell.Tab.1.right" timestamp="1620986625912">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="937" height="348" key="GridCell.Tab.1.right/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1620971782500" />
+    <state width="937" height="348" key="GridCell.Tab.1.right/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620986625912" />
+    <state x="-1729" y="82" key="MergeDialog" timestamp="1621388676168">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1729" y="82" key="MergeDialog/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621388676168" />
+    <state x="153" y="65" key="MergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1620281796806" />
+    <state x="0" y="0" width="1527" height="771" key="dock-window-1" timestamp="1621387682480">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="0" y="0" width="1527" height="771" key="dock-window-1/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621387682480" />
+    <state x="-1510" y="74" width="959" height="614" maximized="true" key="dock-window-1/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1621217153253" />
+    <state x="653" y="143" key="ftp.server.browser" timestamp="1620630308917">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="653" y="143" key="ftp.server.browser/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1620630308917" />
+    <state x="-1251" y="157" key="git4idea.branch.GitSmartOperationDialog" timestamp="1622626288840">
+      <screen x="-1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="-1251" y="157" key="git4idea.branch.GitSmartOperationDialog/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1622626288840" />
+    <state x="535" y="124" key="git4idea.branch.GitSmartOperationDialog/0.0.1536.824@0.0.1536.824" timestamp="1620281751099" />
+    <state x="498" y="178" width="672" height="538" key="search.everywhere.popup" timestamp="1623133119258">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="-1297" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1621307385627" />
+    <state x="498" y="178" width="672" height="538" key="search.everywhere.popup/0.0.1536.824/-1920.0.1920.1040@0.0.1536.824" timestamp="1623133119258" />
+  </component>
+</project>

@@ -1,0 +1,703 @@
+Index: pkg/modbus/Dockerfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>FROM alpine\r\nRUN mkdir -p /etc/kubeedge/\r\nADD config.yaml /etc/kubeedge/\r\nADD modbus-go /bin/\r\nCMD [\"/bin/modbus-go\",\"--v\",\"5\"]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pkg/modbus/Dockerfile	(revision 32e22d62354088962a3a3a8fbf4fc10f9aebe4b9)
++++ pkg/modbus/Dockerfile	(date 1621948641304)
+@@ -1,5 +1,5 @@
+ FROM alpine
+-RUN mkdir -p /etc/kubeedge/
++RUN mkdir -p /etc/kubeedge/exec
+ ADD config.yaml /etc/kubeedge/
+ ADD modbus-go /bin/
+ CMD ["/bin/modbus-go","--v","5"]
+\ No newline at end of file
+Index: pkg/modbus/configmap/parse_test.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package configmap\r\n\r\nimport (\r\n\t\"encoding/json\"\r\n\t\"testing\"\r\n\r\n\t\"github.com/kubeedge/mappers-go/pkg/common\"\r\n\t\"github.com/kubeedge/mappers-go/pkg/modbus/globals\"\r\n\t\"github.com/stretchr/testify/assert\"\r\n)\r\n\r\nfunc TestParse(t *testing.T) {\r\n\tvar devices map[string]*globals.ModbusDev\r\n\tvar models map[string]common.DeviceModel\r\n\tvar protocols map[string]common.Protocol\r\n\r\n\tdevices = make(map[string]*globals.ModbusDev)\r\n\tmodels = make(map[string]common.DeviceModel)\r\n\tprotocols = make(map[string]common.Protocol)\r\n\r\n\tassert.Nil(t, Parse(\"./configmap_test.json\", devices, models, protocols))\r\n\tfor _, device := range devices {\r\n\t\tvar pcc ModbusProtocolCommonConfig\r\n\t\tassert.Nil(t, json.Unmarshal([]byte(device.Instance.PProtocol.ProtocolCommonConfig), &pcc))\r\n\t\tassert.Equal(t, \"RS485\", pcc.CustomizedValues[\"serialType\"])\r\n\t}\r\n}\r\n\r\nfunc TestParseNeg(t *testing.T) {\r\n\tvar devices map[string]*globals.ModbusDev\r\n\tvar models map[string]common.DeviceModel\r\n\tvar protocols map[string]common.Protocol\r\n\r\n\tdevices = make(map[string]*globals.ModbusDev)\r\n\tmodels = make(map[string]common.DeviceModel)\r\n\tprotocols = make(map[string]common.Protocol)\r\n\r\n\tassert.NotNil(t, Parse(\"./configmap_negtest.json\", devices, models, protocols))\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pkg/modbus/configmap/parse_test.go	(revision 32e22d62354088962a3a3a8fbf4fc10f9aebe4b9)
++++ pkg/modbus/configmap/parse_test.go	(date 1621388673607)
+@@ -2,6 +2,7 @@
+ 
+ import (
+ 	"encoding/json"
++	"fmt"
+ 	"testing"
+ 
+ 	"github.com/kubeedge/mappers-go/pkg/common"
+@@ -20,6 +21,7 @@
+ 
+ 	assert.Nil(t, Parse("./configmap_test.json", devices, models, protocols))
+ 	for _, device := range devices {
++		fmt.Println(device)
+ 		var pcc ModbusProtocolCommonConfig
+ 		assert.Nil(t, json.Unmarshal([]byte(device.Instance.PProtocol.ProtocolCommonConfig), &pcc))
+ 		assert.Equal(t, "RS485", pcc.CustomizedValues["serialType"])
+Index: pkg/modbus/configmap/parse.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\nCopyright 2020 The KubeEdge Authors.\r\n\r\nLicensed under the Apache License, Version 2.0 (the \"License\");\r\nyou may not use this file except in compliance with the License.\r\nYou may obtain a copy of the License at\r\n\r\n   http://www.apache.org/licenses/LICENSE-2.0\r\n\r\nUnless required by applicable law or agreed to in writing, software\r\ndistributed under the License is distributed on an \"AS IS\" BASIS,\r\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\nSee the License for the specific language governing permissions and\r\nlimitations under the License.\r\n*/\r\n\r\npackage configmap\r\n\r\nimport (\r\n\t\"encoding/json\"\r\n\t\"fmt\"\r\n\t\"io/ioutil\"\r\n\r\n\t\"github.com/kubeedge/mappers-go/pkg/common\"\r\n\t\"github.com/kubeedge/mappers-go/pkg/modbus/globals\"\r\n\t\"k8s.io/klog\"\r\n)\r\n\r\n// Parse parse the configmap.\r\nfunc Parse(path string,\r\n\tdevices map[string]*globals.ModbusDev,\r\n\tdms map[string]common.DeviceModel,\r\n\tprotocols map[string]common.Protocol) error {\r\n\tvar deviceProfile common.DeviceProfile\r\n\r\n\tjsonFile, err := ioutil.ReadFile(path)\r\n\tif err != nil {\r\n\t\treturn err\r\n\t}\r\n\r\n\tif err = json.Unmarshal(jsonFile, &deviceProfile); err != nil {\r\n\t\treturn err\r\n\t}\r\n\r\n\tfor i := 0; i <= len(deviceProfile.DeviceInstances)-1; i++ {\r\n\t\tfor j := 0; j <= len(deviceProfile.Protocols)-1; j++ {\r\n\t\t\tvar protocolFound bool\r\n\t\t\tif deviceProfile.Protocols[j].Protocol != globals.Modbus {\r\n\t\t\t\tcontinue\r\n\t\t\t}\r\n\t\t\tif deviceProfile.DeviceInstances[i].ProtocolName == deviceProfile.Protocols[j].Name {\r\n\t\t\t\tprotocolFound = true\r\n\t\t\t\tdeviceProfile.DeviceInstances[i].PProtocol = deviceProfile.Protocols[j]\r\n\t\t\t\tbreak\r\n\t\t\t}\r\n\t\t\tif !protocolFound && j == len(deviceProfile.Protocols)-1 {\r\n\t\t\t\treturn fmt.Errorf(\"Protocol not found\")\r\n\t\t\t}\r\n\t\t}\r\n\t\tfor k := 0; k <= len(deviceProfile.DeviceInstances[i].PropertyVisitors)-1; k++ {\r\n\t\t\tmodelName := deviceProfile.DeviceInstances[i].PropertyVisitors[k].ModelName\r\n\t\t\tpropertyName := deviceProfile.DeviceInstances[i].PropertyVisitors[k].PropertyName\r\n\t\t\tfor l := 0; l <= len(deviceProfile.DeviceModels)-1; l++ {\r\n\t\t\t\tvar deviceModelFound bool\r\n\t\t\t\tif modelName == deviceProfile.DeviceModels[l].Name {\r\n\t\t\t\t\tdeviceModelFound = true\r\n\t\t\t\t\tfor m := 0; m <= len(deviceProfile.DeviceModels[l].Properties)-1; m++ {\r\n\t\t\t\t\t\tvar propertyFound bool\r\n\t\t\t\t\t\tif propertyName == deviceProfile.DeviceModels[l].Properties[m].Name {\r\n\t\t\t\t\t\t\tpropertyFound = true\r\n\t\t\t\t\t\t\tdeviceProfile.DeviceInstances[i].PropertyVisitors[k].PProperty = deviceProfile.DeviceModels[l].Properties[m]\r\n\t\t\t\t\t\t\tbreak\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\tif !propertyFound && m == len(deviceProfile.DeviceModels[l].Properties)-1 {\r\n\t\t\t\t\t\t\treturn fmt.Errorf(\"Property not found\")\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t\tbreak\r\n\t\t\t\t}\r\n\t\t\t\tif !deviceModelFound && l == len(deviceProfile.DeviceModels)-1 {\r\n\t\t\t\t\treturn fmt.Errorf(\"Device model not found\")\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\tfor n := 0; n <= len(deviceProfile.DeviceInstances[i].Twins)-1; n++ {\r\n\t\t\tpropertyName := deviceProfile.DeviceInstances[i].Twins[n].PropertyName\r\n\t\t\tfor o := 0; o <= len(deviceProfile.DeviceInstances[i].PropertyVisitors)-1; o++ {\r\n\t\t\t\tvar propertyNameFound bool\r\n\t\t\t\tif propertyName == deviceProfile.DeviceInstances[i].PropertyVisitors[o].PropertyName {\r\n\t\t\t\t\tpropertyNameFound = true\r\n\t\t\t\t\tdeviceProfile.DeviceInstances[i].Twins[n].PVisitor = &deviceProfile.DeviceInstances[i].PropertyVisitors[o]\r\n\t\t\t\t\tbreak\r\n\t\t\t\t}\r\n\t\t\t\tif !propertyNameFound && o == len(deviceProfile.DeviceInstances[i].PropertyVisitors)-1 {\r\n\t\t\t\t\treturn fmt.Errorf(\"PropertyVisitor not found\")\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\tdeviceProfile.DeviceInstances[i].Datas.Properties = deviceProfile.DeviceInstances[i].Properties\r\n\t\tdeviceProfile.DeviceInstances[i].Datas.Topic = deviceProfile.DeviceInstances[i].Topic\r\n\r\n\t\tfor p := 0; p <= len(deviceProfile.DeviceInstances[i].Datas.Properties)-1; p++ {\r\n\t\t\tpropertyName := deviceProfile.DeviceInstances[i].Datas.Properties[p].PropertyName\r\n\t\t\tfor q := 0; q <= len(deviceProfile.DeviceInstances[i].PropertyVisitors)-1; q++ {\r\n\t\t\t\tvar PropertyNameFound bool\r\n\t\t\t\tif propertyName == deviceProfile.DeviceInstances[i].PropertyVisitors[q].PropertyName {\r\n\t\t\t\t\tPropertyNameFound = true\r\n\t\t\t\t\tdeviceProfile.DeviceInstances[i].Datas.Properties[p].PVisitor = &deviceProfile.DeviceInstances[i].PropertyVisitors[q]\r\n\t\t\t\t\tbreak\r\n\t\t\t\t}\r\n\t\t\t\tif !PropertyNameFound && q == len(deviceProfile.DeviceInstances[i].PropertyVisitors)-1 {\r\n\t\t\t\t\treturn fmt.Errorf(\"PropertyVisitor not found\")\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\tdevices[deviceProfile.DeviceInstances[i].ID] = new(globals.ModbusDev)\r\n\t\tdevices[deviceProfile.DeviceInstances[i].ID].Instance = deviceProfile.DeviceInstances[i]\r\n\t\tklog.V(4).Info(\"Instance: \", deviceProfile.DeviceInstances[i].ID, deviceProfile.DeviceInstances[i])\r\n\t}\r\n\tfor _, deviceModel := range deviceProfile.DeviceModels {\r\n\t\tdms[deviceModel.Name] = deviceModel\r\n\t}\r\n\r\n\tfor _, protocol := range deviceProfile.Protocols {\r\n\t\tprotocols[protocol.Name] = protocol\r\n\t}\r\n\treturn nil\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pkg/modbus/configmap/parse.go	(revision 32e22d62354088962a3a3a8fbf4fc10f9aebe4b9)
++++ pkg/modbus/configmap/parse.go	(date 1621388673584)
+@@ -41,7 +41,6 @@
+ 	if err = json.Unmarshal(jsonFile, &deviceProfile); err != nil {
+ 		return err
+ 	}
+-
+ 	for i := 0; i <= len(deviceProfile.DeviceInstances)-1; i++ {
+ 		for j := 0; j <= len(deviceProfile.Protocols)-1; j++ {
+ 			var protocolFound bool
+Index: pkg/modbus/configmap/configmap_test.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n\t\"deviceInstances\": [{\r\n\t\t\"id\": \"sensor-tag-instance-01\",\r\n\t\t\"name\": \"sensor-tag-instance-01\",\r\n\t\t\"protocol\": \"modbus-sensor-tag-instance-01\",\r\n\t\t\"model\": \"sensor-tag-model\",\r\n\t\t\"twins\": [{\r\n\t\t\t\"propertyName\": \"temperature-enable\",\r\n\t\t\t\"desired\": {\r\n\t\t\t\t\"value\": \"OFF\",\r\n\t\t\t\t\"metadata\": {\r\n\t\t\t\t\t\"timestamp\": \"1550049403598\",\r\n\t\t\t\t\t\"type\": \"string\"\r\n\t\t\t\t}\r\n\t\t\t},\r\n\t\t\t\"reported\": {\r\n\t\t\t\t\"value\": \"OFF\",\r\n\t\t\t\t\"metadata\": {\r\n\t\t\t\t\t\"timestamp\": \"1550049403598\",\r\n\t\t\t\t\t\"type\": \"string\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}],\r\n\t\t\"propertyVisitors\": [{\r\n\t\t\t\"name\": \"temperature\",\r\n\t\t\t\"propertyName\": \"temperature\",\r\n\t\t\t\"modelName\": \"sensor-tag-model\",\r\n\t\t\t\"protocol\": \"modbus\",\r\n\t\t\t\"visitorConfig\": {\r\n\t\t\t\t\"register\": \"CoilRegister\",\r\n\t\t\t\t\"offset\": 2,\r\n\t\t\t\t\"limit\": 1,\r\n\t\t\t\t\"scale\": 1,\r\n\t\t\t\t\"isSwap\": true,\r\n\t\t\t\t\"isRegisterSwap\": true\r\n\t\t\t}\r\n\t\t}, {\r\n\t\t\t\"name\": \"temperature-enable\",\r\n\t\t\t\"propertyName\": \"temperature-enable\",\r\n\t\t\t\"modelName\": \"sensor-tag-model\",\r\n\t\t\t\"protocol\": \"modbus\",\r\n\t\t\t\"visitorConfig\": {\r\n\t\t\t\t\"register\": \"DiscreteInputRegister\",\r\n\t\t\t\t\"offset\": 3,\r\n\t\t\t\t\"limit\": 1,\r\n\t\t\t\t\"scale\": 1,\r\n\t\t\t\t\"isSwap\": true,\r\n\t\t\t\t\"isRegisterSwap\": true\r\n\t\t\t}\r\n\t\t}]\r\n\t}],\r\n\t\"deviceModels\": [{\r\n\t\t\"name\": \"sensor-tag-model\",\r\n\t\t\"properties\": [{\r\n\t\t\t\"name\": \"temperature\",\r\n\t\t\t\"dataType\": \"int\",\r\n\t\t\t\"description\": \"temperature in degree celsius\",\r\n\t\t\t\"accessMode\": \"ReadWrite\",\r\n\t\t\t\"defaultValue\": 0,\r\n\t\t\t\"minimum\": 0,\r\n\t\t\t\"maximum\": 100,\r\n\t\t\t\"unit\": \"degree celsius\"\r\n\t\t}, {\r\n\t\t\t\"name\": \"temperature-enable\",\r\n\t\t\t\"dataType\": \"string\",\r\n\t\t\t\"description\": \"enable data collection of temperature sensor\",\r\n\t\t\t\"accessMode\": \"ReadWrite\",\r\n\t\t\t\"defaultValue\": \"OFF\"\r\n\t\t}]\r\n\t}],\r\n\t\"protocols\": [{\r\n\t\t\"name\": \"modbus-sensor-tag-instance-01\",\r\n\t\t\"protocol\": \"modbus\",\r\n\t\t\"protocolConfig\": {\r\n\t\t\t\"slaveID\": 1\r\n\t\t},\r\n\t\t\"protocolCommonConfig\": {\r\n\t\t\t\"com\": {\r\n\t\t\t\t\"serialPort\": \"1\",\r\n\t\t\t\t\"baudRate\": 115200,\r\n\t\t\t\t\"dataBits\": 8,\r\n\t\t\t\t\"parity\": \"even\",\r\n\t\t\t\t\"stopBits\": 1\r\n\t\t\t},\r\n\t\t\t\"customizedValues\": {\r\n\t\t\t\t\"serialType\": \"RS485\"\r\n\t\t\t}\r\n\t\t}\r\n\t}]\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pkg/modbus/configmap/configmap_test.json	(revision 32e22d62354088962a3a3a8fbf4fc10f9aebe4b9)
++++ pkg/modbus/configmap/configmap_test.json	(date 1621388673599)
+@@ -1,90 +1,546 @@
+ {
+-	"deviceInstances": [{
+-		"id": "sensor-tag-instance-01",
+-		"name": "sensor-tag-instance-01",
+-		"protocol": "modbus-sensor-tag-instance-01",
+-		"model": "sensor-tag-model",
+-		"twins": [{
+-			"propertyName": "temperature-enable",
+-			"desired": {
+-				"value": "OFF",
+-				"metadata": {
+-					"timestamp": "1550049403598",
+-					"type": "string"
+-				}
+-			},
+-			"reported": {
+-				"value": "OFF",
+-				"metadata": {
+-					"timestamp": "1550049403598",
+-					"type": "string"
+-				}
+-			}
+-		}],
+-		"propertyVisitors": [{
+-			"name": "temperature",
+-			"propertyName": "temperature",
+-			"modelName": "sensor-tag-model",
+-			"protocol": "modbus",
+-			"visitorConfig": {
+-				"register": "CoilRegister",
+-				"offset": 2,
+-				"limit": 1,
+-				"scale": 1,
+-				"isSwap": true,
+-				"isRegisterSwap": true
+-			}
+-		}, {
+-			"name": "temperature-enable",
+-			"propertyName": "temperature-enable",
+-			"modelName": "sensor-tag-model",
+-			"protocol": "modbus",
+-			"visitorConfig": {
+-				"register": "DiscreteInputRegister",
+-				"offset": 3,
+-				"limit": 1,
+-				"scale": 1,
+-				"isSwap": true,
+-				"isRegisterSwap": true
+-			}
+-		}]
+-	}],
+-	"deviceModels": [{
+-		"name": "sensor-tag-model",
+-		"properties": [{
+-			"name": "temperature",
+-			"dataType": "int",
+-			"description": "temperature in degree celsius",
+-			"accessMode": "ReadWrite",
+-			"defaultValue": 0,
+-			"minimum": 0,
+-			"maximum": 100,
+-			"unit": "degree celsius"
+-		}, {
+-			"name": "temperature-enable",
+-			"dataType": "string",
+-			"description": "enable data collection of temperature sensor",
+-			"accessMode": "ReadWrite",
+-			"defaultValue": "OFF"
+-		}]
+-	}],
+-	"protocols": [{
+-		"name": "modbus-sensor-tag-instance-01",
+-		"protocol": "modbus",
+-		"protocolConfig": {
+-			"slaveID": 1
+-		},
+-		"protocolCommonConfig": {
+-			"com": {
+-				"serialPort": "1",
+-				"baudRate": 115200,
+-				"dataBits": 8,
+-				"parity": "even",
+-				"stopBits": 1
+-			},
+-			"customizedValues": {
+-				"serialType": "RS485"
++	"deviceInstances": [
++		{
++			"id": "device-shutter01-ke-node-arm64",
++			"name": "device-shutter01-ke-node-arm64",
++			"protocol": "modbus-device-shutter01-ke-node-arm64",
++			"model": "modbus-rtu-shutter-model",
++			"dataProperties": [
++				{
++					"propertyName": "lux",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "co2",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "pressure",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "temperature",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "humidity",
++					"metadata": {
++						"type": "string"
++					}
++				}
++			],
++			"dataTopic": "$ke/events/+/device/customized/update",
++			"propertyVisitors": [
++				{
++					"name": "lux",
++					"propertyName": "lux",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 2,
++						"offset": 2,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "co2",
++					"propertyName": "co2",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 1,
++						"offset": 7,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "pressure",
++					"propertyName": "pressure",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 1,
++						"offset": 11,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "temperature",
++					"propertyName": "temperature",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 2,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "humidity",
++					"propertyName": "humidity",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 2,
++						"register": "HoldingRegister"
++					}
++				}
++			]
++		},
++		{
++			"id": "device-shutter02-ke-node-arm64",
++			"name": "device-shutter02-ke-node-arm64",
++			"protocol": "modbus-device-shutter02-ke-node-arm64",
++			"model": "modbus-rtu-shutter-model",
++			"dataProperties": [
++				{
++					"propertyName": "pm2.5",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "pm10",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "noise",
++					"metadata": {
++						"type": "string"
++					}
++				}
++			],
++			"dataTopic": "$ke/events/+/device/customized/update",
++			"propertyVisitors": [
++				{
++					"name": "pm2.5",
++					"propertyName": "pm2.5",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 2,
++						"offset": 20,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "pm10",
++					"propertyName": "pm10",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 2,
++						"offset": 20,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "noise",
++					"propertyName": "noise",
++					"modelName": "modbus-rtu-shutter-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 1,
++						"offset": 4,
++						"register": "HoldingRegister"
++					}
++				}
++			]
++		},
++		{
++			"id": "device-imu-ke-node-arm64",
++			"name": "device-imu-ke-node-arm64",
++			"protocol": "modbus-device-imu-ke-node-arm64",
++			"model": "modbus-rtu-imu-model",
++			"dataProperties": [
++				{
++					"propertyName": "acceleration",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "angularVelocity",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "angular",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "magnetic",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "element",
++					"metadata": {
++						"type": "string"
++					}
++				},
++				{
++					"propertyName": "currenttime",
++					"metadata": {
++						"type": "string"
++					}
++				}
++			],
++			"dataTopic": "$ke/events/+/device/customized/update",
++			"propertyVisitors": [
++				{
++					"name": "acceleration",
++					"propertyName": "acceleration",
++					"modelName": "modbus-rtu-imu-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 3,
++						"offset": 52,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "angularVelocity",
++					"propertyName": "angularVelocity",
++					"modelName": "modbus-rtu-imu-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 3,
++						"offset": 55,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "angular",
++					"propertyName": "angular",
++					"modelName": "modbus-rtu-imu-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 3,
++						"offset": 61,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "magnetic",
++					"propertyName": "magnetic",
++					"modelName": "modbus-rtu-imu-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 3,
++						"offset": 58,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "element",
++					"propertyName": "element",
++					"modelName": "modbus-rtu-imu-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 4,
++						"offset": 81,
++						"register": "HoldingRegister"
++					}
++				},
++				{
++					"name": "currenttime",
++					"propertyName": "currenttime",
++					"modelName": "modbus-rtu-imu-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"limit": 4,
++						"offset": 48,
++						"register": "HoldingRegister"
++					}
++				}
++			]
++		},
++		{
++			"id": "device-snow-ke-node-arm64",
++			"name": "device-snow-ke-node-arm64",
++			"protocol": "modbus-device-snow-ke-node-arm64",
++			"model": "modbus-rtu-snow-model",
++			"dataProperties": [
++				{
++					"propertyName": "snow",
++					"metadata": {
++						"type": "string"
++					}
++				}
++			],
++			"dataTopic": "$ke/events/+/device/customized/update",
++			"propertyVisitors": [
++				{
++					"name": "snow",
++					"propertyName": "snow",
++					"modelName": "modbus-rtu-snow-model",
++					"protocol": "modbus",
++					"visitorConfig": {
++						"register": "HoldingRegister",
++						"offset": 22,
++						"limit": 1
++					}
++				}
++			]
++		}
++	],
++	"deviceModels": [
++		{
++			"name": "modbus-rtu-shutter-model",
++			"properties": [
++				{
++					"name": "lux",
++					"dataType": "int",
++					"description": "光强",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "lux"
++				},
++				{
++					"name": "co2",
++					"dataType": "int",
++					"description": "二氧化碳",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "ppm"
++				},
++				{
++					"name": "pressure",
++					"dataType": "float",
++					"description": "气压",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "hpa"
++				},
++				{
++					"name": "pm2.5",
++					"dataType": "int",
++					"description": "pm2.5",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "ug"
++				},
++				{
++					"name": "pm10",
++					"dataType": "int",
++					"description": "pm10",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "ug"
++				},
++				{
++					"name": "noise",
++					"dataType": "int",
++					"description": "噪音",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "db"
++				},
++				{
++					"name": "temperature",
++					"dataType": "int",
++					"description": "温度",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "℃"
++				},
++				{
++					"name": "humidity",
++					"dataType": "int",
++					"description": "湿度",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 10000000,
++					"unit": "%rh"
++				}
++			]
++		},
++		{
++			"name": "modbus-rtu-imu-model",
++			"properties": [
++				{
++					"name": "acceleration",
++					"dataType": "float",
++					"description": "加速度",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 0,
++					"unit": "m/s2"
++				},
++				{
++					"name": "angularVelocity",
++					"dataType": "float",
++					"description": "角速度X轴",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 0,
++					"unit": "°/s"
++				},
++				{
++					"name": "angular",
++					"dataType": "int",
++					"description": "角度",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 0,
++					"unit": "°"
++				},
++				{
++					"name": "magnetic",
++					"dataType": "int",
++					"description": "磁场",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 0
++				},
++				{
++					"name": "element",
++					"dataType": "int",
++					"description": "四元素",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 0
++				},
++				{
++					"name": "currenttime",
++					"dataType": "int",
++					"description": "时间",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 0
++				}
++			]
++		},
++		{
++			"name": "modbus-rtu-snow-model",
++			"properties": [
++				{
++					"name": "snow",
++					"dataType": "int",
++					"description": "snow",
++					"accessMode": "ReadOnly",
++					"defaultValue": 0,
++					"minimum": 0,
++					"maximum": 1
++				}
++			]
++		}
++	],
++	"protocols": [
++		{
++			"name": "modbus-device-shutter01-ke-node-arm64",
++			"protocol": "modbus",
++			"protocolConfig": {
++				"slaveID": 1
++			},
++			"protocolCommonConfig": {
++				"com": {
++					"baudRate": 9600,
++					"dataBits": 8,
++					"parity": "none",
++					"serialPort": "/dev/ttyUSB1",
++					"stopBits": 1
++				},
++				"commType": "com",
++				"customizedValues": {
++					"serialPort": "RS485"
++				}
++			}
++		},
++		{
++			"name": "modbus-device-shutter02-ke-node-arm64",
++			"protocol": "modbus",
++			"protocolConfig": {
++				"slaveID": 1
++			},
++			"protocolCommonConfig": {
++				"com": {
++					"baudRate": 9600,
++					"dataBits": 8,
++					"parity": "none",
++					"serialPort": "/dev/ttyUSB2",
++					"stopBits": 1
++				},
++				"commType": "com",
++				"customizedValues": {
++					"serialPort": "RS485"
++				}
+ 			}
++		},
++		{
++			"name": "modbus-device-imu-ke-node-arm64",
++			"protocol": "modbus",
++			"protocolConfig": {
++				"slaveID": 80
++			},
++			"protocolCommonConfig": {
++				"com": {
++					"baudRate": 9600,
++					"dataBits": 8,
++					"parity": "none",
++					"serialPort": "/dev/ttyUSB0",
++					"stopBits": 1
++				},
++				"commType": "com",
++				"customizedValues": {
++					"serialPort": "RS485"
++				}
++			}
++		},
++		{
++			"name": "modbus-device-snow-ke-node-arm64",
++			"protocol": "modbus",
++			"protocolConfig": {
++				"slaveID": 1
++			},
++			"protocolCommonConfig": {
++				"com": {
++					"serialPort": "/dev/ttyUSB3",
++					"baudRate": 9600,
++					"dataBits": 8,
++					"parity": "none",
++					"stopBits": 1
++				},
++				"commType": "com",
++				"customizedValues": {
++					"serialPort": "RS485"
++				}
++			}
+ 		}
+-	}]
++	]
+ }
+\ No newline at end of file
+diff --git pkg/modbus/device/device.go pkg/modbus/device/device.go
