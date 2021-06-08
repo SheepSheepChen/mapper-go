@@ -1,0 +1,23 @@
+Index: go.mod
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>module github.com/kubeedge/mappers-go\r\n\r\ngo 1.14\r\n\r\nrequire (\r\n\tgithub.com/eclipse/paho.mqtt.golang v1.3.0\r\n\tgithub.com/goburrow/serial v0.1.0 // indirect\r\n\tgithub.com/sailorvii/modbus v0.1.2\r\n\tgithub.com/sirupsen/logrus v1.8.1\r\n\tgithub.com/spf13/pflag v1.0.5\r\n\tgithub.com/stretchr/testify v1.6.1\r\n\tgopkg.in/yaml.v2 v2.4.0\r\n\tk8s.io/api v0.17.2\r\n\tk8s.io/apimachinery v0.17.2\r\n\tk8s.io/client-go v0.17.2\r\n\tk8s.io/klog v1.0.0\r\n)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- go.mod	(revision 0b3d340139f896d8dc543a4fe4c4eb162559c7c1)
++++ go.mod	(date 1623139483624)
+@@ -3,7 +3,6 @@
+ go 1.14
+ 
+ require (
+-	github.com/eclipse/paho.mqtt.golang v1.3.0
+ 	github.com/goburrow/serial v0.1.0 // indirect
+ 	github.com/sailorvii/modbus v0.1.2
+ 	github.com/sirupsen/logrus v1.8.1
+@@ -14,4 +13,5 @@
+ 	k8s.io/apimachinery v0.17.2
+ 	k8s.io/client-go v0.17.2
+ 	k8s.io/klog v1.0.0
++	github.com/eclips/paho.mqtt.golang v1.3.0
+ )

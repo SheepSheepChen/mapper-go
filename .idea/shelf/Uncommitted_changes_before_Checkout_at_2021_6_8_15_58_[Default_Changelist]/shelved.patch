@@ -1,0 +1,19 @@
+Index: pkg/events/eventnotice.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package events\r\n\r\nimport (\r\n\t\"fmt\"\r\n\t\"time\"\r\n\r\n\t\"k8s.io/apimachinery/pkg/util/rand\"\r\n\t\"github.com/sirupsen/logrus\"\r\n\tapiv1 \"k8s.io/api/core/v1\"\r\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\r\n)\r\n\r\nfunc EventNotice(string2 string) error {\r\n\t//新建clientset客户端\r\n\tclientset, err := NewClientset()\r\n\tif err != nil {\r\n\t\tfmt.Errorf(\"NewClientset err :%v\", err)\r\n\t\treturn err\r\n\t}\r\n\t//新建 event对象\r\n\r\n\tevent := &apiv1.Event{\r\n\t\tObjectMeta: metav1.ObjectMeta{\r\n\t\t\tName: \"mapper-imu-\" + string2,\r\n\t\t},\r\n\t\tInvolvedObject: apiv1.ObjectReference{\r\n\t\t\tKind:      \"pod\",\r\n\t\t\tName:      \"mapper-imu-\"+string2+\".\"+rand.String(10),\r\n\t\t\tNamespace: \"default\",\r\n\t\t},\r\n\t\tFirstTimestamp: metav1.Time{time.Now()},\r\n\t\tMessage:        \"imu 设备不可用\",\r\n\t\tReason:         \"imu disconnect\",\r\n\t\tType:           \"Warning\",\r\n\t}\r\n\r\n\t//创建event\r\n\tresult, err := clientset.CoreV1().Events(\"default\").Create(event)\r\n\tif err != nil {\r\n\t\tlogrus.Error(err)\r\n\t\treturn err\r\n\t}\r\n\tfmt.Printf(\"event:%v\\n\", result.Message)\r\n\treturn nil\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pkg/events/eventnotice.go	(revision 0b3d340139f896d8dc543a4fe4c4eb162559c7c1)
++++ pkg/events/eventnotice.go	(date 1623138875965)
+@@ -10,7 +10,7 @@
+ 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+ )
+ 
+-func EventNotice(string2 string) error {
++func EventNotice(string2 ...string) error {
+ 	//新建clientset客户端
+ 	clientset, err := NewClientset()
+ 	if err != nil {
+diff --git go.mod go.mod
