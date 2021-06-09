@@ -10,6 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+//string2:nodename
 func EventNotice(string2 string) error {
 	//新建clientset客户端
 	clientset, err := NewClientset()
@@ -21,11 +22,11 @@ func EventNotice(string2 string) error {
 
 	event := &apiv1.Event{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "mapper-imu-" + string2,
+			Name: "mapper-imu-" + string2+"."+rand.String(10),
 		},
 		InvolvedObject: apiv1.ObjectReference{
-			Kind:      "pod",
-			Name:      "mapper-imu-"+string2+"."+rand.String(10),
+			Kind:      "deployment",
+			Name:      "mapper-imu-"+string2,
 			Namespace: "default",
 		},
 		FirstTimestamp: metav1.Time{time.Now()},

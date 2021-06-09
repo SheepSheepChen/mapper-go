@@ -53,8 +53,9 @@ func (td *TwinData) Run() error {
 		nodeName = strings.Split(td.DeviceInstanceName, "-")[2]
 	}
 	// 访问失败之后，继续访问，访问10次，如果10次全部失败说明设备或者串口不可用，直接retuen
-	if err != nil {
+	if err != nil || td.Results==nil{
 		for i := 0; i <= 9; i++ {
+			fmt.Println("result=nil")
 			if td.Results, err = td.Client.Get(td.RegisterType, td.Address, td.Quantity); err == nil {
 				break
 			}
