@@ -204,9 +204,13 @@ func initData(dev *globals.ModbusDev) {
 			}
 			collectCycle, _ := time.ParseDuration("1s")
 			timer := common.Timer{Function: twinData.Run, Duration: collectCycle, Times: 0}
-			if err := timer.Start(); err != nil {
-				wg.Done()
+			for {
+				if err := timer.Start(); err != nil {
+					fmt.Println("sleep 7200")
+					time.Sleep(7200 * time.Second)
+				}
 			}
+			wg.Done()
 		}()
 	}
 	if dev.Instance.Model == "modbus-rtu-snow-model" {
@@ -224,9 +228,13 @@ func initData(dev *globals.ModbusDev) {
 			}
 			collectCycle, _ := time.ParseDuration("1s")
 			timer := common.Timer{Function: twinData.Run, Duration: collectCycle, Times: 0}
-			if err := timer.Start(); err != nil {
-				wg.Done()
+			for {
+				if err := timer.Start(); err != nil {
+					fmt.Println("sleep 7200")
+					time.Sleep(7200 * time.Second)
+				}
 			}
+			wg.Done()
 		}()
 	}
 }

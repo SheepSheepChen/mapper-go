@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="e3edba69-5bfa-4f57-9f9e-68653ba04038" name="mapper-common" url="http://1">
+        <fileTransfer accessType="SFTP" host="10.10.102.190" port="22" sshConfigId="4c90b811-8a28-48f6-b2de-e638483820a7" sshConfig="root@10.10.102.190:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

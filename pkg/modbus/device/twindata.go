@@ -18,7 +18,7 @@ package device
 
 import (
 	"fmt"
-	"github.com/kubeedge/mappers-go/events"
+	"github.com/kubeedge/mappers-go/pkg/events"
 	"math"
 	"strconv"
 	"strings"
@@ -67,8 +67,8 @@ func (td *TwinData) Run() error {
 				webhook := "https://oapi.dingtalk.com/robot/send?access_token=e79d127635b34ce6992539a2a2794978136947f4e7f33eaccc5394828d72f570"
 				robot := dingrobot.NewRobot(webhook)
 				content := fmt.Sprintf("设备%v不可用", td.DeviceInstanceName)
-				atMobiles := []string{"18626860751"}
-				robot.SendText(content, atMobiles, false)
+				//atMobiles := []string{"18626860751"}
+				robot.SendText(content, nil, false)
 				return fmt.Errorf("设备不可用")
 			}
 		}
