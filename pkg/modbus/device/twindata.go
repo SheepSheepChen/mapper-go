@@ -61,6 +61,7 @@ func (td *TwinData) Run() error {
 			}
 			if i == 9 {
 				events.EventNotice(nodeName)
+				fmt.Println("imu设备不可用")
 				return fmt.Errorf("IMU设备不可用")
 			}
 		}

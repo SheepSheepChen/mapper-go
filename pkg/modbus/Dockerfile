@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:latest
 RUN mkdir -p /etc/kubeedge/exec
 RUN mkdir -p /root/.kube
 ADD config.yaml /etc/kubeedge/

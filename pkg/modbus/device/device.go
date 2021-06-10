@@ -208,7 +208,11 @@ func initData(dev *globals.ModbusDev) {
 		}
 		collectCycle, _ := time.ParseDuration("0.01s")
 		timer := common.Timer{Function: twinData.Run, Duration: collectCycle, Times: 0}
-		timer.Start()
+		for {
+			if timer.Start()!=nil{
+				time.Sleep(1800)
+			}
+		}
 	}
 }
 

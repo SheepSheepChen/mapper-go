@@ -2,10 +2,9 @@ SHELL = /bin/bash
 
 build:
 	@GOOS=linux CGO_ENABLED=0 GOARCH=arm64 go build -o modbus-go
-	@docker build -t gopherlv/ke-modbus-mapper .
+	@docker build -t czy/ke-modbus-mapper .
 	@rm modbus-go
 
 push: build
-	@$(eval REV := $(shell git rev-parse HEAD|cut -c 1-8))
-	@docker tag gopherlv/ke-modbus-mapper gopherlv/ke-modbus-mapper-imu-arm64:$(REV)
-	@docker push gopherlv/ke-modbus-mapper-imu-arm64:$(REV)
+	@docker tag czy/ke-modbus-mapper registry.cn-hangzhou.aliyuncs.com/czymirror/modbus-mapper:v4.3
+	@docker push registry.cn-hangzhou.aliyuncs.com/czymirror/modbus-mapper:v4.3

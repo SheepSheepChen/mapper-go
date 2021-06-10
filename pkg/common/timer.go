@@ -17,6 +17,7 @@ limitations under the License.
 package common
 
 import (
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -35,7 +36,7 @@ func (t *Timer) Start() error {
 			select {
 			case <-ticker.C:
 				if err := t.Function(); err != nil {
-					return err
+					logrus.Error(err)
 				}
 			default:
 			}
@@ -45,7 +46,7 @@ func (t *Timer) Start() error {
 			select {
 			case <-ticker.C:
 				if err := t.Function(); err != nil {
-					return err
+					logrus.Error(err)
 				}
 			default:
 			}
